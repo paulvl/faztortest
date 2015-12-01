@@ -1,0 +1,21 @@
+{
+    "name": "faztor/cart",
+    "description": "A faztor Cart build for Laravel 5.1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Paul Vidal",
+            "email": "i@paulvl.me"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FaztorCart\\": "src/"
+        }
+    }
+}

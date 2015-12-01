@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Faztor
+        psr4_prefix: Faztor
+        src_path: app
