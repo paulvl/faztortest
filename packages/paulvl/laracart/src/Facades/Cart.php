@@ -1,6 +1,6 @@
 <?php
 
-namespace FaztorCart\Facades;
+namespace LaraCart\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -16,6 +16,6 @@ class Cart extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'faztor.cart';
+        return 'laracart.cart';
     }
 }

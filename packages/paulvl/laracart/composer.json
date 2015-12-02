@@ -1,6 +1,6 @@
 {
-    "name": "faztor/cart",
-    "description": "A faztor Cart build for Laravel 5.1",
+    "name": "paulvl/laracart",
+    "description": "A Shopping Cart build for Laravel 5.1",
     "license": "MIT",
     "authors": [
         {
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FaztorCart\\": "src/"
+            "LaraCart\\": "src/"
         }
     }
 }

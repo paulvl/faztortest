@@ -150,7 +150,7 @@ return [
          */
         Overtrue\LaravelLang\TranslationServiceProvider::class,
         Backup\BackupServiceProvider::class,
-        FaztorCart\CartServiceProvider::class,
+        LaraCart\CartServiceProvider::class,
 
     ],
 
@@ -204,7 +204,7 @@ return [
         /*
          * Package's aliases...
          */
-        'Cart'      => FaztorCart\Facades\Cart::class,
+        'Cart'      => LaraCart\Facades\Cart::class,
 
     ],
 

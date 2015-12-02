@@ -26,13 +26,18 @@ Route::get('/case0', function () {
     	'quantity' => 12,
     	'price' => 110,
     	'tax' => '10%',
-    	'discount' => '-10%'
+    	'discount' => '-5%'
     ]);
 });
 
 Route::get('/case1', function () {
-    \Cart::remove(1231, 6);
-    return "se ha borrado la sesion";
+    \Cart::addCoupon([
+        'id'        => "ABC123",
+        'name'      => "10% en Zapatillas",
+        'code'      => "ABC123",
+        'discount'  => "-10%",
+    ]);
+    return "se ha agregado un cupon al carro";
 });
 
 Route::get('/case2', function () {
@@ -41,5 +46,14 @@ Route::get('/case2', function () {
 });
 
 Route::get('/case3', function () {
+    \Cart::addOtherCharge([
+        'id' => 12213,
+        'name' => 'shipping',
+        'amount' => 23,
+    ]);
+    return "se ha agregado el cargo";
+});
+
+Route::get('/case4', function () {
     return dd(\Cart::total(true));
 });

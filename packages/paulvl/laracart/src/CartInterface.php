@@ -1,6 +1,6 @@
 <?php
 
-namespace FaztorCart;
+namespace LaraCart;
 
 interface CartInterface
 {

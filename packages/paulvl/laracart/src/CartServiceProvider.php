@@ -1,6 +1,6 @@
 <?php
 
-namespace FaztorCart;
+namespace LaraCart;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -38,13 +38,13 @@ class CartServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the faztor cart instance.
+     * Register the laracart cart instance.
      *
      * @return void
      */
     protected function registerFaztorCartInstance()
     {
-        $this->app->singleton('faztor.cart', function ($app) {
+        $this->app->singleton('laracart.cart', function ($app) {
             return new Cart();
         });
     }
@@ -56,6 +56,6 @@ class CartServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['faztor.cart'];
+        return ['laracart.cart'];
     }
 }
