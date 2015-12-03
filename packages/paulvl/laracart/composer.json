@@ -1,6 +1,7 @@
 {
     "name": "paulvl/laracart",
     "description": "A Shopping Cart build for Laravel 5.1",
+    "keywords": ["cart", "laracart", "ecommerce", "shopping", "framework", "laravel"],
     "license": "MIT",
     "authors": [
         {

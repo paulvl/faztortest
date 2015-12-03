@@ -49,7 +49,7 @@ Route::get('/case3', function () {
     \Cart::addOtherCharge([
         'id' => 12213,
         'name' => 'shipping',
-        'amount' => 23,
+        'amount' => 100,
     ]);
     return "se ha agregado el cargo";
 });

@@ -159,8 +159,6 @@ class Cart implements CartInterface
 
 		$summary['taxes'] = $summary['subTotal'] * $taxes;
 
-		$summary['totalDue'] = $summary['subTotal'] + $summary['taxes'];
-
 		if( $this->getCouponsCollection()->count() > 0 )
 		{
 			$couponDiscount = $this->getCouponsCollection()->sum(function ($coupon) {
@@ -172,7 +170,6 @@ class Cart implements CartInterface
 			$totalValue = $summary['subTotal'] + $couponDiscountValue;
 
 			unset($summary['taxes']);
-			unset($summary['totalDue']);
 
 			$summary['couponDiscount'] = $couponDiscountValue;
 
@@ -180,23 +177,34 @@ class Cart implements CartInterface
 
 			$summary['taxes'] = $summary['total'] * $taxes;
 
-			$otherChargesValue = 0;
-
-			if( $this->getOtherChargesCollection()->count() > 0 )
-			{
-				foreach ($this->getOtherChargesCollection() as $otherCharge) {
-					$summary[$otherCharge->name] = $otherCharge->amount;
-					$otherChargesValue += $otherCharge->amount;
-				}
-			}
+			$otherChargesArray = $this->setOtherCharges();
+			$otherChargesValue = array_sum($otherChargesArray);
+			$summary = array_merge($summary, $otherChargesArray);
 
 			$summary['totalDue'] = $summary['total'] + $summary['taxes'] + $otherChargesValue;
+		}
+		else{
+			$otherChargesArray = $this->setOtherCharges();
+			$otherChargesValue = array_sum($otherChargesArray);
+			$summary = array_merge($summary, $otherChargesArray);
+			$summary['totalDue'] = $summary['subTotal'] + $summary['taxes'] + $otherChargesValue;
 		}
 
 		if($summarized)
 			return (object)$summary;
 
 		return $summary['totalDue']; 
+	}
+
+	protected function setOtherCharges()
+	{
+		$array = array();
+		
+		foreach ($this->getOtherChargesCollection() as $otherCharge) {
+			$array[$otherCharge->name] = $otherCharge->amount;
+		}
+
+		return $array;
 	}
 
 	protected function validateSessions()
