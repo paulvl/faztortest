@@ -23,10 +23,10 @@ Route::get('/case0', function () {
     \Cart::add([
     	'id' => 1231,
     	'name' => 'Zapatillas',
-    	'quantity' => 12,
-    	'price' => 110,
+    	'quantity' => 1,
+    	'price' => 100,
     	'tax' => '10%',
-    	'discount' => '-5%'
+    	//'discount' => '-5%'
     ]);
 });
 
@@ -35,7 +35,7 @@ Route::get('/case1', function () {
         'id'        => "ABC123",
         'name'      => "10% en Zapatillas",
         'code'      => "ABC123",
-        'discount'  => "-10%",
+        'discount'  => "-20%",
     ]);
     return "se ha agregado un cupon al carro";
 });

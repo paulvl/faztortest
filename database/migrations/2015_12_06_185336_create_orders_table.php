@@ -16,16 +16,17 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('state_id')->unsigned();
-            $table->string('from')->nullable();
-            $table->string('to');
-            $table->string('address');
-            $table->string('phone');
-            $table->decimal('subtotal', 8, 2);
-            $table->decimal('total_due', 8, 2);
-            $table->decimal('total_due', 8, 2);
-            $table->decimal('total_due', 8, 2);
             $table->string('payment_method')->nullable();
             $table->string('delivery_method')->nullable();
+            $table->string('from')->nullable();
+            $table->string('to');
+            $table->string('details')->nullable();
+            $table->string('address');
+            $table->string('phone');
+            $table->decimal('total', 8, 2);
+            $table->decimal('taxes', 8, 2);
+            $table->decimal('other_charges', 8, 2);
+            $table->decimal('total_due', 8, 2);
             $table->timestamps();
 
             $table->foreign('user_id')
