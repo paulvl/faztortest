@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsTable extends Migration
+class CreateProductPriceHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,19 +12,16 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_price_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('description');
-            $table->unsignedInteger('category_id');
-            $table->integer('stock')->default(0);
+            $table->unsignedInteger('product_id');
             $table->decimal('price', 8, 2);
             $table->decimal('discount_percentage', 3, 2);
             $table->timestamps();
 
-            $table->foreign('category_id')
-              ->references('id')->on('product_categories')
-              ->onDelete('cascade');
+            $table->foreign('product_id')
+                ->references('id')->on('products')
+                ->onDelete('cascade');
         });
     }
 
@@ -35,6 +32,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('products');
+        Schema::drop('product_price_histories');
     }
 }

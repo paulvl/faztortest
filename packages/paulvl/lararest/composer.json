@@ -1,0 +1,23 @@
+{
+  "name": "paulvl/lararest",
+  "description": "RESTful assets for Laravel 5.1",
+  "keywords": ["rest", "restful", "api", "framework", "laravel"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Paul Vidal",
+      "email": "i@paulvl.me"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.5.9",
+    "laravel/framework": "5.1.*",
+    "paulvl/larasponse": "1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "LaraRest\\": "src/"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 <?php
 
+use Faztor\OrderState;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -17,6 +19,17 @@ class CreateOrderStatesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+
+        Model::unguard();
+
+        OrderState::create(['name' => 'Nuevo']);
+        OrderState::create(['name' => 'Pagado']);
+        OrderState::create(['name' => 'Enviado']);
+        OrderState::create(['name' => 'Entregado']);
+        OrderState::create(['name' => 'Devuelto']);
+        OrderState::create(['name' => 'Cancelado']);
+
+        Model::reguard();
     }
 
     /**

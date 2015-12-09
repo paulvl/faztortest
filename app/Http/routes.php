@@ -14,6 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::group(['namespace' => 'Api'], function() {
+    Route::group(['prefix' => 'api'], function () {
+        Route::controller("product/{h?}", "ProductController");
+    });
+});
 
 Route::get('/casex', function () {
 	return dd(\Cart::all());
