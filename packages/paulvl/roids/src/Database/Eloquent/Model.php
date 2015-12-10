@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Schema;
 
 class Model extends EloquentModel
 {
+    public static function getPrimaryKeyName()
+    {
+        return with(new static)->getKeyName();
+    }
+
     public static function getTableName()
     {
         return with(new static)->getTable();

@@ -23,7 +23,7 @@ trait QueryingRequests
             {
                 foreach($handledRequestParameters['queries'] as $query)
                 {
-
+                    $queryBuilder = $this->handleQuery($queryBuilder, $query);
                 }
             }
 
@@ -107,39 +107,72 @@ trait QueryingRequests
         $queryColumn = $query['column'];
         $queryArray = $query['query'];
 
-        $queryParamentersNumber = count($queryArray);
+        $queryParametersNumber = count($queryArray);
 
-        if($queryParamentersNumber == 1)
+        if($queryParametersNumber >= 1)
         {
-            switch($queryArray[0])
+            $firstQueryParameter = strtolower( $queryArray[0] );
+
+            if($queryParametersNumber == 1)
             {
-                case "null":
-                    return $queryBuilder->whereNull($queryColumn);
-                    break;
-                case "notnull":
-                    return $queryBuilder->whereNotNull($queryColumn);
-                    break;
-                default:
-                    return $queryBuilder->where($queryColumn, $queryArray[0]);
-                    break;
+                switch($firstQueryParameter)
+                {
+                    case "null":
+                        return $queryBuilder->whereNull($queryColumn);
+                        break;
+                    case "notnull":
+                        return $queryBuilder->whereNotNull($queryColumn);
+                        break;
+                    default:
+                        return $queryBuilder->where($queryColumn, $queryArray[0]);
+                        break;
+                }
+            }
+
+            if($queryParametersNumber == 2)
+            {
+                switch($firstQueryParameter)
+                {
+                    case in_array($firstQueryParameter, ['=', '<', '>', '<=', '>=', '<>', 'like']):
+                        return $queryBuilder->where($queryColumn, $firstQueryParameter, $queryArray[1]);
+                        break;
+                    case "notnull":
+                        return $queryBuilder->whereNotNull($queryColumn);
+                        break;
+                }
+            }
+
+            if($queryParametersNumber == 3)
+            {
+                switch($firstQueryParameter)
+                {
+                    case 'between':
+                        return $queryBuilder->whereBetween($queryColumn, $firstQueryParameter, [$queryArray[1],$queryArray[2]]);
+                        break;
+                    case "notbetween":
+                        return $queryBuilder->whereNotBetween($queryColumn, $firstQueryParameter, [$queryArray[1],$queryArray[2]]);
+                        break;
+                }
+            }
+
+            if( in_array($firstQueryParameter, ['in', 'notin']) )
+            {
+                $inOrNotInArray = $queryArray;
+                unset( $inOrNotInArray[0] );
+
+                switch($firstQueryParameter)
+                {
+                    case 'in':
+                        return $queryBuilder->whereIn($queryColumn, $firstQueryParameter, $inOrNotInArray);
+                        break;
+                    case "notin":
+                        return $queryBuilder->whereNotIn($queryColumn, $firstQueryParameter, $inOrNotInArray);
+                        break;
+                }
             }
         }
 
-        if($queryParamentersNumber == 2)
-        {
-            switch($queryArray[0])
-            {
-                case in_array($queryArray[0], ['=', '<', '>', '<=', '>=', '<>', 'like']):
-                    return $queryBuilder->where($queryColumn, $queryArray[0], $queryArray[1]);
-                    break;
-                case "notnull":
-                    return $queryBuilder->whereNotNull($queryColumn);
-                    break;
-                default:
-                    return $queryBuilder->where($queryColumn, $queryArray[0]);
-                    break;
-            }
-        }
+        return $queryBuilder;
     }
 
     protected function validateInteger($value)
