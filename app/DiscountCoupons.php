@@ -2,7 +2,7 @@
 
 namespace Faztor;
 
-use Illuminate\Database\Eloquent\Model;
+use Roids\Database\Eloquent\Model;
 
 class DiscountCoupons extends Model
 {

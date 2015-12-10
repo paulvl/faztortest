@@ -12,7 +12,6 @@ trait QueryingRequests
     {
         $modelClass = $this->model;
 
-        //$queryBuilder = DB::table( $modelClass::getTableName() );
         $queryBuilder = new $modelClass;
 
         if( count($parameters = $request->all()) > 0 )
@@ -38,7 +37,7 @@ trait QueryingRequests
                         return $currentPage;
                     });
 
-                    return $queryBuilder = $queryBuilder->paginate($handledRequestParameters['pagination']['paginate']);
+                    return $queryBuilder = $queryBuilder->paginate($handledRequestParameters['pagination']['paginate'])->setPath(url());
                 }
             }
 
@@ -219,6 +218,16 @@ trait QueryingRequests
     protected function isSqlOperator($value)
     {
         return in_array($value, ['=', '<', '>', '<=', '>=', '<>', 'like', "in", "notin", "between", "notbetween", "null", "notnull"]);
+    }
+
+    protected function getPaginationUrl()
+    {
+
+    }
+
+    protected function getFullUrl()
+    {
+        return url().$_SERVER['REQUEST_URI'];
     }
 
 }
