@@ -1,0 +1,22 @@
+{
+  "name": "paulvl/roids",
+  "description": "Some Laravel 5.1 components in Steroids",
+  "keywords": ["steroids", "illuminate", "components", "framework", "laravel"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Paul Vidal",
+      "email": "i@paulvl.me"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.5.9",
+    "laravel/framework": "5.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Roids\\": "src/"
+    }
+  }
+}

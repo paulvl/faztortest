@@ -23,7 +23,8 @@
         "psr-4": {
             "Faztor\\": "app/",
             "LaraCart\\": "packages/paulvl/laracart/src/",
-            "LaraRest\\": "packages/paulvl/lararest/src/"
+            "LaraRest\\": "packages/paulvl/lararest/src/",
+            "Roids\\": "packages/paulvl/roids/src/"
         }
     },
     "autoload-dev": {

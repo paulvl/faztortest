@@ -3,26 +3,48 @@
 namespace LaraRest;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 trait QueryingRequests
 {
-    public function validateQuery(Request $request, $modelClass)
+    public function validateQuery(Request $request)
     {
+        $modelClass = $this->model;
+
+        //$queryBuilder = DB::table( $modelClass::getTableName() );
+        $queryBuilder = new $modelClass;
+
         if( count($parameters = $request->all()) > 0 )
         {
             $handledRequestParameters = $this->handleRequestParameters($parameters);
 
-            foreach($handledRequestParameters['queries'] as $query)
+            if( isset($handledRequestParameters['queries']) )
             {
+                foreach($handledRequestParameters['queries'] as $query)
+                {
 
+                }
             }
 
-            return 'aa';
+            if( isset($handledRequestParameters['take']) ) {
+                $queryBuilder = $queryBuilder->take($handledRequestParameters['take']);
+            }
+            else {
+                if( isset($handledRequestParameters['pagination']) ) {
+                    $currentPage = $handledRequestParameters['pagination']['page'];
+
+                    Paginator::currentPageResolver(function() use ($currentPage) {
+                        return $currentPage;
+                    });
+
+                    return $queryBuilder = $queryBuilder->paginate($handledRequestParameters['pagination']['paginate']);
+                }
+            }
+
         }
 
-        $re = $modelClass::paginate(2);
-        $re->setPath('custom/url');
-        return $re;
+        return $queryBuilder->get();
     }
 
     protected function handleRequestParameters(array $requestParameters)
@@ -62,19 +84,62 @@ trait QueryingRequests
             unset($requestParameters['take']);
         }
 
-        $queries = null;
+        $requestParameters = $this->validateQueryColumnExistence($requestParameters);
+
+        $queries = array();
 
         foreach($requestParameters as $key => $value)
         {
-            $validatedQueryParameter = $this->validateQueryParameter($key, $value);
+            $validatedQueryParameter = $this->getQueryParameters($key, $value);
 
-            if(! is_null($validatedQueryParameter) )
+            if(is_array($validatedQueryParameter) )
                 array_push($queries, $validatedQueryParameter);
         }
 
-        $queryParameters['queries'] = $queries;
+        if( emptyArray($queries) )
+            $queryParameters['queries'] = $queries;
 
         return $queryParameters;
+    }
+
+    protected function handleQuery($queryBuilder, $query)
+    {
+        $queryColumn = $query['column'];
+        $queryArray = $query['query'];
+
+        $queryParamentersNumber = count($queryArray);
+
+        if($queryParamentersNumber == 1)
+        {
+            switch($queryArray[0])
+            {
+                case "null":
+                    return $queryBuilder->whereNull($queryColumn);
+                    break;
+                case "notnull":
+                    return $queryBuilder->whereNotNull($queryColumn);
+                    break;
+                default:
+                    return $queryBuilder->where($queryColumn, $queryArray[0]);
+                    break;
+            }
+        }
+
+        if($queryParamentersNumber == 2)
+        {
+            switch($queryArray[0])
+            {
+                case in_array($queryArray[0], ['=', '<', '>', '<=', '>=', '<>', 'like']):
+                    return $queryBuilder->where($queryColumn, $queryArray[0], $queryArray[1]);
+                    break;
+                case "notnull":
+                    return $queryBuilder->whereNotNull($queryColumn);
+                    break;
+                default:
+                    return $queryBuilder->where($queryColumn, $queryArray[0]);
+                    break;
+            }
+        }
     }
 
     protected function validateInteger($value)
@@ -93,44 +158,34 @@ trait QueryingRequests
 
     }
 
-    protected function validateQueryParameter($key, $value)
+    protected function getQueryParameters($key, $value)
     {
         $explodedValue = explode(',', $value);
-        $validatedParameter = null;
 
-        switch( count($explodedValue) )
-        {
-            case 1:
-                $explodedValue = $explodedValue;
-                break;
-            case 2:
-                $explodedValue = $this->isLogicalOperator($explodedValue[0]) ? $explodedValue : null;
-                break;
-            case 3:
-                $explodedValue = null;
-                break;
-            case 4:
-                $explodedValue = $this->isLogicalOperator($explodedValue[0]) && $this->isLogicalOperator($explodedValue[2]) ? $explodedValue : null;
-                break;
-            default:
-                $explodedValue = null;
-                break;
-        }
-
-        if(! is_null($explodedValue) )
-        {
-            $validatedParameter = [
-                'column'    => $key,
-                'query'     => $explodedValue
-            ];
-        }
-
-        return $validatedParameter;
+        return [
+            'column'    => $key,
+            'query'     => $explodedValue
+        ];
     }
 
-    protected function isLogicalOperator($value)
+    protected function validateQueryColumnExistence(array $requestParameters)
     {
-        return in_array($value, ['<','>','<=','>=']);
+        $modelClass = $this->model;
+
+        $tableColumns = $modelClass::getTableColumnNames();
+
+        foreach($requestParameters as $requestParameter => $value)
+        {
+            if(! in_array($requestParameter, $tableColumns) )
+                unset($requestParameters[$requestParameter]);
+        }
+
+        return $requestParameters;
+    }
+
+    protected function isSqlOperator($value)
+    {
+        return in_array($value, ['=', '<', '>', '<=', '>=', '<>', 'like', "in", "notin", "between", "notbetween", "null", "notnull"]);
     }
 
 }

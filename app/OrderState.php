@@ -2,7 +2,7 @@
 
 namespace Faztor;
 
-use Illuminate\Database\Eloquent\Model;
+use Roids\Database\Eloquent\Model;
 use Faztor\Order;
 
 class OrderState extends Model
