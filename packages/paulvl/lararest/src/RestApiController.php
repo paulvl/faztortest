@@ -58,6 +58,7 @@ abstract class RestApiController extends IlluminateController
 
         if($queryResult instanceof LengthAwarePaginator ) {
             $responseData = $queryResult->toArray();
+            $responseData = $this->buildPaginationUrl($responseData, $request);
         }
 
         if( count( $responseData['data'] ) < 1 )

@@ -37,7 +37,7 @@ trait QueryingRequests
                         return $currentPage;
                     });
 
-                    return $queryBuilder = $queryBuilder->paginate($handledRequestParameters['pagination']['paginate'])->setPath(url());
+                    return $queryBuilder = $queryBuilder->paginate($handledRequestParameters['pagination']['paginate'])->setPath( $this->getUrlParameters($request) );
                 }
             }
 
@@ -220,14 +220,52 @@ trait QueryingRequests
         return in_array($value, ['=', '<', '>', '<=', '>=', '<>', 'like', "in", "notin", "between", "notbetween", "null", "notnull"]);
     }
 
-    protected function getPaginationUrl()
+    protected function getUrlParameters(Request $request)
     {
+       return $this->remove_page_parameter( $this->getFullUrl(), $request );
+    }
 
+    protected function remove_page_parameter($url, Request $request)
+    {
+        if( $request->has("page") )
+        {
+            $page = $request->get("page");
+
+            $pageStrings= [
+                "?page=" . $page,
+                "?page=" . $page . ",",
+                "&page=" . $page,
+                "&page=" . $page . ","
+            ];
+
+            foreach($pageStrings as $pageString) {
+                $url = str_replace($pageString, "", $url);
+            }
+        }
+
+        return $url;
     }
 
     protected function getFullUrl()
     {
         return url().$_SERVER['REQUEST_URI'];
+    }
+
+    protected function buildPaginationUrl(array $paginate, Request $request)
+    {
+        if( $paginate["current_page"] > 0 )
+        {
+            $currentPage = $paginate["current_page"];
+            $lastPage = $paginate["last_page"];
+
+            $previousUrl = $currentPage == 1 ? null : $this->getUrlParameters($request) . "?page= " . ($currentPage - 1) ;
+            $paginate["prev_page_url"] = $previousUrl;
+
+            $nextUrl = ($currentPage + 1) >= $lastPage ? null : $this->getUrlParameters($request) . "?page= " . ($currentPage + 1) ;
+            $paginate["next_page_url"] = $nextUrl;
+        }
+
+        return $paginate;
     }
 
 }
