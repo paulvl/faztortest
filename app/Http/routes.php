@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('site.index');
 });
 Route::group(['namespace' => 'Api'], function() {
     Route::group(['prefix' => 'api'], function () {
